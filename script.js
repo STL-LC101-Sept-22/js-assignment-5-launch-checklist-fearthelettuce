@@ -3,12 +3,14 @@
 // const { pickPlanet } = require("./scriptHelper");
 
 window.addEventListener("load", function () {
-    const missionTargetElement = document.getElementById('missionTarget');
+
     const submitBtn = document.getElementById('formSubmit')
+    const missionTargetEle = document.getElementById('missionTarget')
     const pilotNameInput = document.getElementById('pilotName')
     const coPilotNameInput = document.querySelector("[name='copilotName']")
     const fuelLevelInput = document.querySelector("[name='fuelLevel']")
     const cargoMassInput = document.querySelector("[name='cargoMass']")
+    const faultItemList = document.getElementById('faultyItems')
 
 
     submitBtn.addEventListener('click',submitForm)
@@ -23,42 +25,46 @@ window.addEventListener("load", function () {
         console.log(listedPlanets);
         // Below this comment call the appropriate helper functions to pick a planet fom the list of planets and add that information to your destination.
         const planet = pickPlanet(listedPlanets)
-        addDestinationInfo(missionTargetElement, planet.name, planet.diameter, planet.star, planet.distance, planet.moons, planet.image);
+        addDestinationInfo(missionTargetEle, planet.name, planet.diameter, planet.star, planet.distance, planet.moons, planet.image);
     })
    
     function submitForm(event) {
         event.preventDefault()
+        console.log('hi')
+        formSubmission(window.document, faultItemList, pilotNameInput.value, coPilotNameInput.value, fuelLevelInput.value, cargoMassInput.value) 
 
-        if (!isValidInput()) { return }
-        shuttleStatus = {
-            overallStatus: getOverallStatus(),
-            pilot: {
-                label: pilotNameInput.value,
-                status: true,
-                statusLabel: 'is ready'
-            },
-            coPilot: {
-                label: coPilotNameInput.value,
-                status: true,
-                statusLabel: 'is ready'
-            },
-            fuelLevel: {
-                label: 'Fuel level',
-                status: getFuelLevelStatus(fuelLevelInput.value),
-                statusLabel: 'too low',
-            },
-            cargoMass: {
-                label: 'Cargo mass',
-                status: getCargoMassStatus(cargoMassInput.value),
-                statusLabel: 'low enough',
-            }
-        }
+        // if (!isValidInput()) { return }
+        // shuttleStatus = {
+        //     overallStatus: getOverallStatus(),
+        //     pilot: {
+        //         label: pilotNameInput.value,
+        //         status: true,
+        //         statusLabel: 'is ready'
+        //     },
+        //     coPilot: {
+        //         label: coPilotNameInput.value,
+        //         status: true,
+        //         statusLabel: 'is ready'
+        //     },
+        //     fuelLevel: {
+        //         label: 'Fuel level',
+        //         status: getFuelLevelStatus(fuelLevelInput.value),
+        //         statusLabel: 'too low',
+        //     },
+        //     cargoMass: {
+        //         label: 'Cargo mass',
+        //         status: getCargoMassStatus(cargoMassInput.value),
+        //         statusLabel: 'low enough',
+        //     }
+        // }
     }
 
     function isValidInput() {
         let validInput = true;
         let inputErrorMessage = '';
-        if (pilotNameInput.value == '' || coPilotNameInput.value == '' || fuelLevelInput.value == '' || cargoMassInput.value == '' ) {
+
+        
+        if (validateInput(pilotNameInput.value) === 'Empty' || validateInput(coPilotNameInput.value) === 'Empty' || validateInput(fuelLevelInput.value) === 'Empty' || validateInput(cargoMassInput.value) === 'Empty' ) {
             validInput = false;
             inputErrorMessage += 'All fields are required!'
         }

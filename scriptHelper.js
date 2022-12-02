@@ -3,18 +3,7 @@ require('isomorphic-fetch');
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
    // Here is the HTML formatting for our mission target div.
-   /*
-                <h2>Mission Destination</h2>
-                <ol>
-                    <li>Name: </li>
-                    <li>Diameter: </li>
-                    <li>Star: ${star}</li>
-                    <li>Distance from Earth: </li>
-                    <li>Number of Moons: </li>
-                </ol>
-                <img src="">
-   */
-    document.innerHTML += `<h2>Mission Destination</h2>
+    document.innerHTML = `<h2>Mission Destination</h2>
                 <ol>
                     <li>Name: ${name}</li>
                     <li>Diameter: ${diameter}</li>
@@ -26,19 +15,20 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
 }
 
 function validateInput(testInput) {
-   
+    if (testInput === '') {return 'Empty'}
+    if (isNaN(Number(testInput))) { return 'Not a Number' }
+    if (!isNaN(Number(testInput))) {return 'Is a Number'}
 }
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
-   
+   const missionTargetEle = document.getElementById('missionTarget')
 }
 
 async function myFetch() {
     let planetsReturned;
-
-    planetsReturned = await fetch('https://handlers.education.launchcode.org/static/planets.json')
-        .then((response) => response.json())
-        .then((resJSON) => {return resJSON })
+    planetsReturned = await fetch('https://handlers.education.launchcode.org/static/planets.json').then(function (response) {
+        return response.json()
+        });
     return planetsReturned;
 }
 
