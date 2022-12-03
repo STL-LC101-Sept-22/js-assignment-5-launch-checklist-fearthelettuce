@@ -18,9 +18,9 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
 
 function validateInput(testInput) {
     let numInput = Number(testInput)
-    if (testInput === '') {return 'Empty'}
-    if (isNaN(numInput)) { return 'Not a Number' }
-    if (!isNaN(numInput)) {return 'Is a Number'}
+    if (testInput === '') {return 'Empty'};
+    if (isNaN(numInput)) {return 'Not a Number'};
+    if (!isNaN(numInput)) {return 'Is a Number'};
 }
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
@@ -48,10 +48,7 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
     list.style.visibility = 'visible'
     let overallStatus = checkLaunchStatus(document,launchList)
     updateOverallLaunchStatus(document, overallStatus)
-
 }
-
-
 
 function checkLaunchStatus(document, launchListObj) {
     let overallLaunchStatus = true;
@@ -135,8 +132,12 @@ function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLeve
 async function myFetch() {
     let planetsReturned;
     planetsReturned = await fetch('https://handlers.education.launchcode.org/static/planets.json').then(function (response) {
-        return response.json()
-        });
+        if (!response.ok) {
+            throw new Error('Unable to get data')
+        } else {
+            return response.json()
+        }
+    });
     return planetsReturned;
 }
 
