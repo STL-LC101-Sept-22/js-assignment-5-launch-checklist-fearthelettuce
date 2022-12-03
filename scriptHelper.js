@@ -3,7 +3,8 @@ require('isomorphic-fetch');
 
 function addDestinationInfo(document, name, diameter, star, distance, moons, imageUrl) {
    // Here is the HTML formatting for our mission target div.
-    document.innerHTML = `<h2>Mission Destination</h2>
+    document.getElementById('missionTarget').innerHTML = `
+                <h2>Mission Destination</h2>
                 <ol>
                     <li>Name: ${name}</li>
                     <li>Diameter: ${diameter}</li>
@@ -11,13 +12,15 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
                     <li>Distance from Earth: ${distance}</li>
                     <li>Number of Moons: ${moons}</li>
                 </ol>
-                <img src="${imageUrl}">`
+                <img src="${imageUrl}">
+                `
 }
 
 function validateInput(testInput) {
+    let numInput = Number(testInput)
     if (testInput === '') {return 'Empty'}
-    if (isNaN(testInput)) { return 'Not a Number' }
-    if (!isNaN(testInput)) {return 'Is a Number'}
+    if (isNaN(numInput)) { return 'Not a Number' }
+    if (!isNaN(numInput)) {return 'Is a Number'}
 }
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
@@ -37,43 +40,44 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
     }
     if (!areInputsValid) {
         alert(inputErrorMessage)
+        list.style.visibility = 'hidden'
         return
     }
     //all inputs are valid
     // toggleElementVisibility(list)
-    checkLaunchStatus(launchList, list)
-    
+    list.style.visibility = 'visible'
+    let overallStatus = checkLaunchStatus(document,launchList)
+    updateOverallLaunchStatus(document, overallStatus)
+
 }
 
 
 
-function checkLaunchStatus(launchListObj, listEle) {
+function checkLaunchStatus(document, launchListObj) {
     let overallLaunchStatus = true;
     for (listItem in launchListObj) {
-        updateLaunchListItem(launchListObj[listItem].statusEle, `${launchListObj[listItem].nameLabel} ${launchListObj[listItem].statusFunc(launchListObj[listItem].value).statusLabel} for launch`)
+        let statusString = `${launchListObj[listItem].nameLabel} ${launchListObj[listItem].statusFunc(launchListObj[listItem].value).statusLabel} for launch`.trim()
+        updateDomEle(document, launchListObj[listItem].statusEle, statusString)
         if (!launchListObj[listItem].statusFunc(launchListObj[listItem].value).isReady) {
             overallLaunchStatus = false;
         }
     }
-    updateOverallLaunchStatus(overallLaunchStatus)
-    listEle.style.visibility = 'visible'
     return overallLaunchStatus
-    
 }
 
-function updateLaunchListItem(eleId, statusString, fontColor) {
+function updateDomEle(document, eleId, statusString, fontColor) {
     let domEle = document.getElementById(eleId)
-    domEle.innerText = statusString
+    domEle.textContent = statusString.trim()
     if (fontColor) {
         domEle.style.color = fontColor
     }
 }
 
-function updateOverallLaunchStatus(isReadyForLaunch) {
+function updateOverallLaunchStatus(document, isReadyForLaunch) {
     if (isReadyForLaunch) {
-        updateLaunchListItem('launchStatus', 'Shuttle is ready for launch','green')
+        updateDomEle(document, 'launchStatus', 'Shuttle is Ready for Launch','rgb(65, 159, 106)')
     } else {
-        updateLaunchListItem('launchStatus', 'Shuttle not ready for launch','red')
+        updateDomEle(document,'launchStatus', 'Shuttle Not Ready for Launch','rgb(199, 37, 78)')
 
     }
 }
@@ -101,7 +105,7 @@ function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLeve
         fuelItem: {
             value: Number(fuelLevelInput),
             statusEle: 'fuelStatus',
-            nameLabel: `Fuel level`,
+            nameLabel: 'Fuel level',
             isReady: true,
             // statusLabel: 'high enough'
             statusFunc: function (fuelKg) {
@@ -122,7 +126,7 @@ function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLeve
                 if (cargoKg < 10000) {
                     return { isReady: true, statusLabel: 'low enough' }
                 }
-                return { isReady: false, statusLabel: 'too high' }
+                return { isReady: false, statusLabel: 'too heavy' }
             },
         }
     }
