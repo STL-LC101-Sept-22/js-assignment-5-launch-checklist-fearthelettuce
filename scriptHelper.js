@@ -21,6 +21,7 @@ function validateInput(testInput) {
 }
 
 function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
+    let launchList = createLaunchListObj(pilot, copilot, fuelLevel, cargoLevel)
     let areInputsValid = true;
     inputErrorMessage = ''
     if (validateInput(pilot) === 'Empty' || validateInput(copilot) === 'Empty' || validateInput(Number(fuelLevel)) === 'Empty' || validateInput(Number(cargoLevel)) === 'Empty') {
@@ -40,53 +41,13 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
     }
     //all inputs are valid
     // toggleElementVisibility(list)
-    let launchListObj = {
-        pilotItem: {
-            statusEle: 'pilotStatus',
-            nameLabel: `Pilot ${pilot}`,
-            // isReady: true,
-            // statusLabel: 'is ready',
-            statusFunc: function () {
-                return {isReady: true, statusLabel: 'is ready'}
-            }
-        },
-        copilotItem: {
-            statusEle: 'copilotStatus',
-            nameLabel: `Co-pilot ${copilot}`,
-            // isReady: true,
-            // statusLabel: 'is ready',
-            statusFunc: function () {
-                return {isReady: true, statusLabel: 'is ready'}
-            }
-        },
-        fuelItem: {
-            value: Number(fuelLevel),
-            statusEle: 'fuelStatus',
-            nameLabel: `Fuel level`,
-            isReady: true,
-            // statusLabel: 'high enough'
-            statusFunc: function (fuelKg) {
-                if (fuelKg < 10000) {
-                  return {isReady: false, statusLabel: 'too low'}  
-                }
-                return {isReady: true, statusLabel: 'high enough'}
-            },
+    checkLaunchStatus(launchList, list)
+    
+}
 
-        },
-        cargoItem: {
-            value: Number(cargoLevel),
-            statusEle: 'cargoStatus',
-            nameLabel: 'Cargo mass',
-            // isReady: true,
-            // statusLabel: 'low enough',
-            statusFunc: function (cargoKg) {
-                if (cargoLevel < 10000) {
-                    return {isReady: true, statusLabel: 'low enough'}
-                }
-                return { isReady: false, statusLabel: 'too high' }  
-            },
-        }
-    }
+
+
+function checkLaunchStatus(launchListObj, listEle) {
     let overallLaunchStatus = true;
     for (listItem in launchListObj) {
         updateLaunchListItem(launchListObj[listItem].statusEle, `${launchListObj[listItem].nameLabel} ${launchListObj[listItem].statusFunc(launchListObj[listItem].value).statusLabel} for launch`)
@@ -94,26 +55,78 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
             overallLaunchStatus = false;
         }
     }
-    console.log(overallLaunchStatus)
-    list.style.visibility = 'visible'
-}
-
-function updateLaunchListItem(eleId, statusString) {
-    let domEle = document.getElementById(eleId)
-    domEle.innerText = statusString
-}
-
-function getStatus() {
+    updateOverallLaunchStatus(overallLaunchStatus)
+    listEle.style.visibility = 'visible'
+    return overallLaunchStatus
     
 }
-// function toggleElementVisibility(ele) {
-//     let visStyle = ele.style.visibility
-//     if (visStyle === 'hidden') {
-//         visStyle = 'visible'
-//     } else {
-//         visStyle = 'hidden'
-//     }
-// }
+
+function updateLaunchListItem(eleId, statusString, fontColor) {
+    let domEle = document.getElementById(eleId)
+    domEle.innerText = statusString
+    if (fontColor) {
+        domEle.style.color = fontColor
+    }
+}
+
+function updateOverallLaunchStatus(isReadyForLaunch) {
+    if (isReadyForLaunch) {
+        updateLaunchListItem('launchStatus', 'Shuttle is ready for launch','green')
+    } else {
+        updateLaunchListItem('launchStatus', 'Shuttle not ready for launch','red')
+
+    }
+}
+
+function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLevelInput) {
+    return {
+        pilotItem: {
+            statusEle: 'pilotStatus',
+            nameLabel: `Pilot ${pilotInput}`,
+            // isReady: true,
+            // statusLabel: 'is ready',
+            statusFunc: function () {
+                return { isReady: true, statusLabel: 'is ready' }
+            }
+        },
+        copilotItem: {
+            statusEle: 'copilotStatus',
+            nameLabel: `Co-pilot ${copilotInput}`,
+            // isReady: true,
+            // statusLabel: 'is ready',
+            statusFunc: function () {
+                return { isReady: true, statusLabel: 'is ready' }
+            }
+        },
+        fuelItem: {
+            value: Number(fuelLevelInput),
+            statusEle: 'fuelStatus',
+            nameLabel: `Fuel level`,
+            isReady: true,
+            // statusLabel: 'high enough'
+            statusFunc: function (fuelKg) {
+                if (fuelKg < 10000) {
+                    return { isReady: false, statusLabel: 'too low' }
+                }
+                return { isReady: true, statusLabel: 'high enough' }
+            },
+
+        },
+        cargoItem: {
+            value: Number(cargoLevelInput),
+            statusEle: 'cargoStatus',
+            nameLabel: 'Cargo mass',
+            // isReady: true,
+            // statusLabel: 'low enough',
+            statusFunc: function (cargoKg) {
+                if (cargoKg < 10000) {
+                    return { isReady: true, statusLabel: 'low enough' }
+                }
+                return { isReady: false, statusLabel: 'too high' }
+            },
+        }
+    }
+}
 
 async function myFetch() {
     let planetsReturned;
