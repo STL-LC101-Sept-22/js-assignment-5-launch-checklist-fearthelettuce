@@ -28,58 +28,7 @@ window.addEventListener("load", function () {
         event.preventDefault()
         const formData = event.target.form
         formSubmission(window.document, faultItemList, formData.pilotName.value, formData.copilotName.value, formData.fuelLevel.value, formData.cargoMass.value) 
-
-        // if (!isValidInput()) { return }
-        // shuttleStatus = {
-        //     overallStatus: getOverallStatus(),
-        //     pilot: {
-        //         label: pilotNameInput.value,
-        //         status: true,
-        //         statusLabel: 'is ready'
-        //     },
-        //     coPilot: {
-        //         label: coPilotNameInput.value,
-        //         status: true,
-        //         statusLabel: 'is ready'
-        //     },
-        //     fuelLevel: {
-        //         label: 'Fuel level',
-        //         status: getFuelLevelStatus(fuelLevelInput.value),
-        //         statusLabel: 'too low',
-        //     },
-        //     cargoMass: {
-        //         label: 'Cargo mass',
-        //         status: getCargoMassStatus(cargoMassInput.value),
-        //         statusLabel: 'low enough',
-        //     }
-        // }
     }
-
-    // function isValidInput() {
-    //     let validInput = true;
-    //     let inputErrorMessage = '';
-
-        
-    //     if (validateInput(pilotNameInput.value) === 'Empty' || validateInput(coPilotNameInput.value) === 'Empty' || validateInput(fuelLevelInput.value) === 'Empty' || validateInput(cargoMassInput.value) === 'Empty' ) {
-    //         validInput = false;
-    //         inputErrorMessage += 'All fields are required!'
-    //     }
-    //     if (typeof (pilotNameInput.value) !== 'string' || typeof (coPilotNameInput.value) !== 'string') {
-    //         validInput = false;
-    //         inputErrorMessage += 'Make sure to enter valid information for each field!'
-    //     }
-    //     if (isNaN(Number(fuelLevelInput.value)) || isNaN(Number(cargoMassInput.value))) {
-    //         validInput = false;
-    //         if (inputErrorMessage !== '') {
-    //             inputErrorMessage += '\n'
-    //         }
-    //         inputErrorMessage += 'Make sure to enter valid information for each field!'
-    //     }
-    //     if (inputErrorMessage !== '') {
-    //         alert(inputErrorMessage)
-    //     }
-    //     return validInput
-    // }
 
 });
 

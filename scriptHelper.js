@@ -43,11 +43,52 @@ function formSubmission(document, list, pilot, copilot, fuelLevel, cargoLevel) {
         list.style.visibility = 'hidden'
         return
     }
-    //all inputs are valid
-    // toggleElementVisibility(list)
     list.style.visibility = 'visible'
     let overallStatus = checkLaunchStatus(document,launchList)
     updateOverallLaunchStatus(document, overallStatus)
+}
+
+function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLevelInput) {
+    return {
+        pilotItem: {
+            statusEle: 'pilotStatus',
+            nameLabel: `Pilot ${pilotInput}`,
+            statusFunc: function () {
+                return { isReady: true, statusLabel: 'is ready' }
+            }
+        },
+        copilotItem: {
+            statusEle: 'copilotStatus',
+            nameLabel: `Co-pilot ${copilotInput}`,
+            statusFunc: function () {
+                return { isReady: true, statusLabel: 'is ready' }
+            }
+        },
+        fuelItem: {
+            value: Number(fuelLevelInput),
+            statusEle: 'fuelStatus',
+            nameLabel: 'Fuel level',
+            isReady: true,
+            statusFunc: function (fuelKg) {
+                if (fuelKg < 10000) {
+                    return { isReady: false, statusLabel: 'too low' }
+                }
+                return { isReady: true, statusLabel: 'high enough' }
+            },
+
+        },
+        cargoItem: {
+            value: Number(cargoLevelInput),
+            statusEle: 'cargoStatus',
+            nameLabel: 'Cargo mass',
+            statusFunc: function (cargoKg) {
+                if (cargoKg < 10000) {
+                    return { isReady: true, statusLabel: 'low enough' }
+                }
+                return { isReady: false, statusLabel: 'too heavy' }
+            },
+        }
+    }
 }
 
 function checkLaunchStatus(document, launchListObj) {
@@ -79,55 +120,7 @@ function updateOverallLaunchStatus(document, isReadyForLaunch) {
     }
 }
 
-function createLaunchListObj(pilotInput, copilotInput, fuelLevelInput, cargoLevelInput) {
-    return {
-        pilotItem: {
-            statusEle: 'pilotStatus',
-            nameLabel: `Pilot ${pilotInput}`,
-            // isReady: true,
-            // statusLabel: 'is ready',
-            statusFunc: function () {
-                return { isReady: true, statusLabel: 'is ready' }
-            }
-        },
-        copilotItem: {
-            statusEle: 'copilotStatus',
-            nameLabel: `Co-pilot ${copilotInput}`,
-            // isReady: true,
-            // statusLabel: 'is ready',
-            statusFunc: function () {
-                return { isReady: true, statusLabel: 'is ready' }
-            }
-        },
-        fuelItem: {
-            value: Number(fuelLevelInput),
-            statusEle: 'fuelStatus',
-            nameLabel: 'Fuel level',
-            isReady: true,
-            // statusLabel: 'high enough'
-            statusFunc: function (fuelKg) {
-                if (fuelKg < 10000) {
-                    return { isReady: false, statusLabel: 'too low' }
-                }
-                return { isReady: true, statusLabel: 'high enough' }
-            },
 
-        },
-        cargoItem: {
-            value: Number(cargoLevelInput),
-            statusEle: 'cargoStatus',
-            nameLabel: 'Cargo mass',
-            // isReady: true,
-            // statusLabel: 'low enough',
-            statusFunc: function (cargoKg) {
-                if (cargoKg < 10000) {
-                    return { isReady: true, statusLabel: 'low enough' }
-                }
-                return { isReady: false, statusLabel: 'too heavy' }
-            },
-        }
-    }
-}
 
 async function myFetch() {
     let planetsReturned;
